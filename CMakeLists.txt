@@ -12,6 +12,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
     zblock 
     src/main.cpp
+    src/app.cpp
+    src/gl/glshader.cpp
+    src/glfw/window.cpp
     lib/glad/src/glad.c
 )
 

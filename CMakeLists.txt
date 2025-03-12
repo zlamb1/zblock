@@ -4,12 +4,16 @@ project(
     zblock
     VERSION 1.0
     DESCRIPTION "Simple block game. Written in C++ with GLFW/OpenGL."
-    LANGUAGES CXX
+    LANGUAGES C CXX
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(zblock src/main.cpp)
+add_executable(
+    zblock 
+    src/main.cpp
+    lib/glad/src/glad.c
+)
 
 target_include_directories(
     zblock PRIVATE include
@@ -26,9 +30,13 @@ set_target_properties(
 
 find_package(OpenGL REQUIRED)
 target_link_libraries(zblock OpenGL::GL)
-target_include_directories(
-    zblock PRIVATE glfw/include
-)
 
-add_subdirectory(glfw)
+target_include_directories(
+    zblock PRIVATE lib/glfw/include
+)
+add_subdirectory(lib/glfw)
 target_link_libraries(zblock glfw)
+
+target_include_directories(
+    zblock PRIVATE lib/glad/include
+)

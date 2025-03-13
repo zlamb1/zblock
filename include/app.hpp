@@ -34,6 +34,6 @@ class GameApplication : public Application
 
     protected:
         Ref<ZG::Window> m_Window;
-        Ref<ShaderProgram> m_Program; 
+        Ref<ZG::ShaderProgram> m_Program; 
 
 };

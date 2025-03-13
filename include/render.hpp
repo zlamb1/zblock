@@ -24,8 +24,8 @@ namespace ZG
 
             virtual Ref<Shader> CreateShader(ShaderType shaderType) = 0;
             virtual Ref<ShaderProgram> CreateProgram() = 0;
-            virtual Ref<ZG::Window> CreateWindow() = 0; 
-            virtual Ref<ZG::Window> CreateWindow(int width, int height) = 0; 
+            virtual Ref<Window> CreateWindow() = 0; 
+            virtual Ref<Window> CreateWindow(int width, int height) = 0; 
 
         protected:
             std::string m_InitializeError;

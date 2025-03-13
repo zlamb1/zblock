@@ -12,8 +12,8 @@ namespace GL
 
             virtual void SetViewport(int x, int y, int width, int height) override; 
 
-            virtual Ref<Shader> CreateShader(ShaderType shaderType) override;
-            virtual Ref<ShaderProgram> CreateProgram() override;
+            virtual Ref<ZG::Shader> CreateShader(ZG::ShaderType shaderType) override;
+            virtual Ref<ZG::ShaderProgram> CreateProgram() override;
 
     };
 };

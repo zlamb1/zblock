@@ -13,7 +13,7 @@ add_executable(
     zblock 
     src/main.cpp
     src/app.cpp
-    src/gl/glshader.cpp
+    src/gl/shader.cpp
     src/gl/render.cpp
     src/glfw/render.cpp
     src/glfw/window.cpp

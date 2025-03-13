@@ -64,7 +64,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     glBindBuffer(GL_ARRAY_BUFFER, vbo); 
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
     
-    auto vertexShader = m_RenderCore.CreateShader(ShaderType::VERTEX); 
+    auto vertexShader = m_RenderCore.CreateShader(ZG::VERTEX); 
     if (!vertexShader->CompileShader(vertexShaderCode))
     {
         std::cout << vertexShader->GetCompileError();
@@ -72,7 +72,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
         return;
     }
 
-    auto fragmentShader = m_RenderCore.CreateShader(ShaderType::FRAGMENT); 
+    auto fragmentShader = m_RenderCore.CreateShader(ZG::FRAGMENT); 
     if (!fragmentShader->CompileShader(fragmentShaderCode))
     {
         std::cout << fragmentShader->GetCompileError();

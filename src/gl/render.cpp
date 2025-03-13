@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
 #include <gl/debug.hpp>
-#include <gl/glshader.hpp>
+#include <gl/shader.hpp>
 #include <gl/render.hpp>
 
 #include <ref.hpp>
@@ -13,13 +13,13 @@ namespace GL
         GLCall(glViewport(x, y, width, height)); 
     }
 
-    Ref<Shader> RenderCore::CreateShader(ShaderType shaderType)
+    Ref<ZG::Shader> RenderCore::CreateShader(ZG::ShaderType shaderType)
     {
-        return CreateRef<GLShader>(shaderType); 
+        return CreateRef<GL::Shader>(shaderType); 
     }
 
-    Ref<ShaderProgram> RenderCore::CreateProgram()
+    Ref<ZG::ShaderProgram> RenderCore::CreateProgram()
     {
-        return CreateRef<GLShaderProgram>(); 
+        return CreateRef<GL::ShaderProgram>(); 
     }
 };

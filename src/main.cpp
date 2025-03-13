@@ -1,4 +1,5 @@
 #include <glfw/render.hpp>
+
 #include <app.hpp>
 
 int main(void)

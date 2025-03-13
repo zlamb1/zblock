@@ -2,8 +2,9 @@
 
 #include <types.hpp>
 
-#include <shader.hpp>
-#include <window.hpp>
+#include <render/shader.hpp>
+
+#include <window/window.hpp>
 
 namespace ZG
 {

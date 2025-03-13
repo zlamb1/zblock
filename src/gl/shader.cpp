@@ -1,7 +1,7 @@
-#include <shader.hpp>
-
 #include <gl/debug.hpp>
 #include <gl/shader.hpp>
+
+#include <render/shader.hpp>
 
 namespace GL
 {
@@ -39,9 +39,9 @@ namespace GL
     {
         switch (shaderType)
         {
-            case ZG::VERTEX:
+            case ZG::ShaderType::VERTEX:
                 return GL_VERTEX_SHADER;
-            case ZG::FRAGMENT:
+            case ZG::ShaderType::FRAGMENT:
                 return GL_FRAGMENT_SHADER; 
             default:
                 return 0;

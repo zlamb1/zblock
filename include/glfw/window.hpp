@@ -1,8 +1,10 @@
 #pragma once
 
-#include "resource.hpp"
 #include <GLFW/glfw3.h>
-#include <window.hpp>
+
+#include <window/window.hpp>
+
+#include <resource.hpp>
 
 namespace GLFW
 {

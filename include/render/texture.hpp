@@ -1,10 +1,10 @@
 #pragma once
 
-#include "resource.hpp"
+#include <resource.hpp>
 
 namespace ZG
 {
-    enum TextureType
+    enum class TextureType : int
     {
         TEXTURE_2D,
         TEXTURE_3D

@@ -1,4 +1,5 @@
-#include "GLFW/glfw3.h"
+#include <GLFW/glfw3.h>
+
 #include <glfw/window.hpp>
 
 namespace GLFW

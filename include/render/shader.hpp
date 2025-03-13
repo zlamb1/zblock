@@ -1,15 +1,16 @@
 #pragma once
 
 #include <algorithm>
+#include <string>
+#include <vector>
+
 #include <ref.hpp>
 #include <resource.hpp>
-#include <string>
 #include <types.hpp>
-#include <vector>
 
 namespace ZG
 {
-    enum ShaderType
+    enum class ShaderType : int
     {
         VERTEX,
         FRAGMENT

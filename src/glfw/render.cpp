@@ -32,6 +32,7 @@ namespace GLFW
         window->MakeContextCurrent();
         // load context-specific functions via GLAD/GLFW
         gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        // set active texture to well-defined value
         GLCall(glActiveTexture(GL_TEXTURE0));
         return true; 
     }

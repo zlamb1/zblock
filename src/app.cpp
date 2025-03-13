@@ -1,8 +1,9 @@
+#include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <app.hpp>
-#include <iostream>
 
 static const char* vertexShaderCode =
     "#version 460\n"
@@ -64,7 +65,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     glBindBuffer(GL_ARRAY_BUFFER, vbo); 
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
     
-    auto vertexShader = m_RenderCore.CreateShader(ZG::VERTEX); 
+    auto vertexShader = m_RenderCore.CreateShader(ZG::ShaderType::VERTEX); 
     if (!vertexShader->CompileShader(vertexShaderCode))
     {
         std::cout << vertexShader->GetCompileError();
@@ -72,7 +73,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
         return;
     }
 
-    auto fragmentShader = m_RenderCore.CreateShader(ZG::FRAGMENT); 
+    auto fragmentShader = m_RenderCore.CreateShader(ZG::ShaderType::FRAGMENT); 
     if (!fragmentShader->CompileShader(fragmentShaderCode))
     {
         std::cout << fragmentShader->GetCompileError();

@@ -1,9 +1,11 @@
 #pragma once
 
-#include <render.hpp>
 #include <ref.hpp>
-#include <shader.hpp>
-#include <window.hpp>
+
+#include <render/render.hpp>
+#include <render/shader.hpp>
+
+#include <window/window.hpp>
 
 class Application
 {

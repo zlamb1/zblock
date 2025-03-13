@@ -45,3 +45,8 @@ target_link_libraries(zblock glfw)
 target_include_directories(
     zblock PRIVATE lib/glad/include
 )
+
+add_subdirectory(lib/glm)
+target_include_directories(
+    zblock PRIVATE lib/glm
+)

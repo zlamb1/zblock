@@ -48,7 +48,8 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     // enable v-sync
     m_RenderCore.SetSwapInterval(1);
     
-    float data[9] = {
+    float data[9] = 
+    {
         -0.5f, -0.5f, 0.0f,
         0.0f, 0.5f, 0.0f,
         0.5f, -0.5f, 0.0f

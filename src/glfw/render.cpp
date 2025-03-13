@@ -1,4 +1,3 @@
-#include "window.hpp"
 #include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -18,7 +17,7 @@ namespace GLFW
     {
         if (!glfwInit())
         {
-            m_InitializeError = "glfwInit"; 
+            m_InitializeError = "glfwInit\n"; 
             return false; 
         }
 

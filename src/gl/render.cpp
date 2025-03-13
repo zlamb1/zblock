@@ -1,14 +1,16 @@
 #include <glad/glad.h>
 
+#include <gl/debug.hpp>
 #include <gl/glshader.hpp>
 #include <gl/render.hpp>
+
 #include <ref.hpp>
 
 namespace GL
 {
     void RenderCore::SetViewport(int x, int y, int width, int height)
     {
-        glViewport(x, y, width, height); 
+        GLCall(glViewport(x, y, width, height)); 
     }
 
     Ref<Shader> RenderCore::CreateShader(ShaderType shaderType)

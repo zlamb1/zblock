@@ -1,9 +1,11 @@
-#include "shader.hpp"
+#include <shader.hpp>
+
+#include <gl/debug.hpp>
 #include <gl/glshader.hpp>
 
 GLShader::GLShader(ShaderType shaderType) : Shader(shaderType)
 {
-    m_Handle = glCreateShader(GetGLShaderType(shaderType));
+    m_Handle = GLCall(glCreateShader(GetGLShaderType(shaderType)));
 }
 
 GLShader::~GLShader()
@@ -15,14 +17,14 @@ bool GLShader::CompileShader(const char *shaderCode)
 {
     GLint success;
 
-    glShaderSource(m_Handle, 1, &shaderCode, NULL);
-    glCompileShader(m_Handle);
-    glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &success);
+    GLCall(glShaderSource(m_Handle, 1, &shaderCode, NULL));
+    GLCall(glCompileShader(m_Handle));
+    GLCall(glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &success));
 
     if (success != GL_TRUE)
     {
         GLchar infoLog[512]; 
-        glGetShaderInfoLog(m_Handle, 512, NULL, infoLog);
+        GLCall(glGetShaderInfoLog(m_Handle, 512, NULL, infoLog));
         m_CompileError = "SHADER::COMPILE::ERROR\n";
         m_CompileError += infoLog;
         return false;
@@ -46,7 +48,7 @@ GLenum GLShader::GetGLShaderType(ShaderType shaderType)
 
 GLShaderProgram::GLShaderProgram()
 {
-    m_Handle = glCreateProgram(); 
+    m_Handle = GLCall(glCreateProgram()); 
 }
 
 GLShaderProgram::~GLShaderProgram()
@@ -59,16 +61,16 @@ bool GLShaderProgram::CompileProgram()
     GLint success;
 
     for (auto shader : m_Shaders)
-        glAttachShader(m_Handle, shader->GetHandle()); 
+        GLCall(glAttachShader(m_Handle, shader->GetHandle())); 
 
-    glLinkProgram(m_Handle);
+    GLCall(glLinkProgram(m_Handle));
 
-    glGetProgramiv(m_Handle, GL_LINK_STATUS, &success);
+    GLCall(glGetProgramiv(m_Handle, GL_LINK_STATUS, &success));
 
     if(success != GL_TRUE)
     {
         GLchar infoLog[512]; 
-        glGetProgramInfoLog(m_Handle, 512, NULL, infoLog);
+        GLCall(glGetProgramInfoLog(m_Handle, 512, NULL, infoLog));
         m_CompileError = "PROGRAM::COMPILE::ERROR\n";
         m_CompileError += infoLog; 
         return false; 
@@ -79,6 +81,6 @@ bool GLShaderProgram::CompileProgram()
 
 bool GLShaderProgram::BindProgram()
 {
-    glUseProgram(m_Handle); 
+    GLCall(glUseProgram(m_Handle)); 
     return true; 
 }

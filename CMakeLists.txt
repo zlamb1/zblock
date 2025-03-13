@@ -50,3 +50,7 @@ add_subdirectory(lib/glm)
 target_include_directories(
     zblock PRIVATE lib/glm
 )
+
+target_include_directories(
+    zblock PRIVATE lib/stb
+)

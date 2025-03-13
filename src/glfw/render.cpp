@@ -2,8 +2,11 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <gl/debug.hpp>
+
 #include <glfw/render.hpp>
 #include <glfw/window.hpp>
+
 #include <ref.hpp>
 
 namespace GLFW
@@ -29,6 +32,7 @@ namespace GLFW
         window->MakeContextCurrent();
         // load context-specific functions via GLAD/GLFW
         gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+        GLCall(glActiveTexture(GL_TEXTURE0));
         return true; 
     }
 

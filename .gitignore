@@ -6,3 +6,6 @@ CMakeCache.txt
 Makefile
 compile_commands.json
 .cache
+
+# VSCode
+.vscode/

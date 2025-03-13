@@ -13,6 +13,7 @@ namespace ZG
 
             virtual void MakeContextCurrent() = 0; 
             virtual void SwapBuffers() = 0; 
+            virtual void PollEvents() = 0;
 
             virtual void SetSize(uint width, uint height) = 0; 
             virtual void SetTitle(const std::string& title) = 0; 

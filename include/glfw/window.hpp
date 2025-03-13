@@ -10,10 +10,12 @@ namespace GLFW
     {
         public:
             Window();
+            Window(int width, int height); 
             virtual ~Window() override;
 
             virtual void MakeContextCurrent() override;
             virtual void SwapBuffers() override; 
+            virtual void PollEvents() override;
 
             virtual void SetSize(uint width, uint height) override; 
             virtual void SetTitle(const std::string& title) override;

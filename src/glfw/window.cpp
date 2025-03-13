@@ -3,13 +3,17 @@
 
 namespace GLFW
 {
-    Window::Window() 
+    Window::Window() : GLFW::Window(100, 100)
     {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    }
+
+    Window::Window(int width, int height) 
+    {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
 
-        m_Handle = glfwCreateWindow(100, 100, "", NULL, NULL); 
+        m_Handle = glfwCreateWindow(width, height, "", NULL, NULL); 
 
         if (m_Handle == nullptr)
         {
@@ -31,6 +35,11 @@ namespace GLFW
     void Window::SwapBuffers() 
     {
         glfwSwapBuffers(m_Handle); 
+    }
+
+    void Window::PollEvents()
+    {
+        glfwPollEvents(); 
     }
 
     void Window::SetSize(uint width, uint height)

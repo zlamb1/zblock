@@ -1,10 +1,7 @@
 #include <glad/glad.h>
-#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include <app.hpp>
-#include "glfw/window.hpp"
-#include "gl/glshader.hpp"
 #include <iostream>
 
 static const char* vertexShaderCode =
@@ -23,30 +20,33 @@ static const char* fragmentShaderCode =
     "    fragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
     "}\n";
 
-GameApplication::GameApplication()
+GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(renderCore)
 {
-    if (!glfwInit())
+    if (!m_RenderCore.InitializeCore())
     {
-        std::cout << "GLFW Failed\n"; 
-        m_Initialized = false; 
-        return; 
+        std::cout << m_RenderCore.GetInitializeError(); 
+        return;
     }
 
-    m_Window = CreateRef<GLFW::Window>(); 
+    m_Window = m_RenderCore.CreateWindow(500, 500); 
 
     if (!m_Window->IsInitialized())
     {
         std::cout << m_Window->GetInitializeErrorHint(); 
         return; 
     }
-
-    m_Window->SetSize(500, 500);
+    
     m_Window->SetTitle("zblock");
     
-    m_Window->MakeContextCurrent(); 
-    glfwSwapInterval(1);
+    // make window context current for thread
+    if (!m_RenderCore.MakeContextCurrent(m_Window))
+    {
+        std::cout << "MakeContextCurrent\n"; 
+        return;
+    }
 
-    gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+    // enable v-sync
+    m_RenderCore.SetSwapInterval(1);
     
     float data[9] = {
         -0.5f, -0.5f, 0.0f,
@@ -55,8 +55,6 @@ GameApplication::GameApplication()
     };
 
     // hello-world tri
-    GLint success; 
-    char infoLog[512]; 
     GLuint vao, vbo;
     glGenVertexArrays(1, &vao); 
     glBindVertexArray(vao); 
@@ -64,8 +62,8 @@ GameApplication::GameApplication()
     glGenBuffers(1, &vbo); 
     glBindBuffer(GL_ARRAY_BUFFER, vbo); 
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-
-    auto vertexShader = CreateRef<GLShader>(ShaderType::VERTEX); 
+    
+    auto vertexShader = m_RenderCore.CreateShader(ShaderType::VERTEX); 
     if (!vertexShader->CompileShader(vertexShaderCode))
     {
         std::cout << vertexShader->GetCompileError();
@@ -73,7 +71,7 @@ GameApplication::GameApplication()
         return;
     }
 
-    auto fragmentShader = CreateRef<GLShader>(ShaderType::FRAGMENT); 
+    auto fragmentShader = m_RenderCore.CreateShader(ShaderType::FRAGMENT); 
     if (!fragmentShader->CompileShader(fragmentShaderCode))
     {
         std::cout << fragmentShader->GetCompileError();
@@ -81,7 +79,7 @@ GameApplication::GameApplication()
         return;
     }
 
-    m_Program = CreateRef<GLShaderProgram>(); 
+    m_Program = m_RenderCore.CreateProgram(); 
     m_Program->AttachShader(vertexShader); 
     m_Program->AttachShader(fragmentShader);
     if (!m_Program->CompileProgram())
@@ -94,18 +92,18 @@ GameApplication::GameApplication()
     glEnableVertexAttribArray(0); 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
         sizeof(data[0]) * 3, (void*) 0);
-    
-    glViewport(0, 0, 500, 500);
+
+    m_RenderCore.SetViewport(0, 0, 500, 500);
 }
 
 void GameApplication::RunApp()
 {
     while (IsRunning())
     {
-            glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
         m_Program->BindProgram(); 
         glDrawArrays(GL_TRIANGLES, 0, 3);
         m_Window->SwapBuffers(); 
-        glfwPollEvents();
+        m_Window->PollEvents();
     }
 }

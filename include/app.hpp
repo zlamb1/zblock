@@ -1,5 +1,6 @@
 #pragma once
 
+#include <render.hpp>
 #include <ref.hpp>
 #include <shader.hpp>
 #include <window.hpp>
@@ -7,7 +8,7 @@
 class Application
 {
     public:
-        Application() = default;
+        Application(ZG::RenderCore& renderCore) : m_RenderCore(renderCore) {};
         virtual ~Application() = default;
 
         virtual void RunApp() = 0;
@@ -16,6 +17,8 @@ class Application
         virtual bool IsRunning() { return m_Running; }
 
     protected:
+        ZG::RenderCore& m_RenderCore; 
+
         bool m_Initialized = true;
         bool m_Running = true;
 
@@ -24,7 +27,7 @@ class Application
 class GameApplication : public Application
 {
     public:
-        GameApplication();
+        GameApplication(ZG::RenderCore& renderCore);
 
         virtual void RunApp() override;
         virtual bool IsRunning() override { return m_Running && m_Window->IsRunning(); }

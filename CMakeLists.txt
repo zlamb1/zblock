@@ -14,6 +14,8 @@ add_executable(
     src/main.cpp
     src/app.cpp
     src/gl/glshader.cpp
+    src/gl/render.cpp
+    src/glfw/render.cpp
     src/glfw/window.cpp
     lib/glad/src/glad.c
 )

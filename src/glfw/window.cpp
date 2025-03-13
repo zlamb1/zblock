@@ -10,7 +10,7 @@ namespace GLFW
 
     Window::Window(int width, int height) 
     {
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
 
@@ -43,29 +43,61 @@ namespace GLFW
         glfwPollEvents(); 
     }
 
-    void Window::SetSize(uint width, uint height)
+    int Window::GetX() 
     {
-        glfwSetWindowSize(m_Handle, width, height); 
+        int x, y;
+        glfwGetWindowPos(m_Handle, &x, &y);
+        return x; 
     }
 
-    void Window::SetTitle(const std::string& title)
+    int Window::GetY() 
     {
-        m_Title = title; 
-        glfwSetWindowTitle(m_Handle, m_Title.c_str()); 
+        int x, y;
+        glfwGetWindowPos(m_Handle, &x, &y);
+        return y; 
     }
 
-    uint Window::GetWidth() 
+    void Window::SetPosition(int x, int y)
+    {
+        glfwSetWindowPos(m_Handle, x, y);
+    }
+
+    int Window::GetWidth() 
     {
         int w, h;
         glfwGetWindowSize(m_Handle, &w, &h); 
         return w; 
     } 
 
-    uint Window::GetHeight()
+    int Window::GetHeight()
     {
         int w, h;
         glfwGetWindowSize(m_Handle, &w, &h); 
         return h; 
+    }
+
+    void Window::SetSize(int width, int height)
+    {
+        glfwSetWindowSize(m_Handle, width, height); 
+    }
+
+    double Window::GetMouseX()
+    {
+        double x, y;
+        glfwGetCursorPos(m_Handle, &x, &y);
+        return x; 
+    }
+
+    double Window::GetMouseY()
+    {
+        double x, y;
+        glfwGetCursorPos(m_Handle, &x, &y);
+        return y; 
+    }
+
+    void Window::SetMousePosition(double x, double y)
+    {
+        glfwSetCursorPos(m_Handle, x, y);
     }
 
     const std::string& Window::GetTitle()
@@ -73,6 +105,12 @@ namespace GLFW
         const char *title = glfwGetWindowTitle(m_Handle);
         m_Title = title; 
         return m_Title; 
+    }
+
+    void Window::SetTitle(const std::string& title)
+    {
+        m_Title = title; 
+        glfwSetWindowTitle(m_Handle, m_Title.c_str()); 
     }
 
     bool Window::IsRunning()

@@ -375,7 +375,7 @@
 
 #endif
 
-#define ZG_GLFW_CONV(C) \
+#define ZG_GLFW_KEY_CONV(C) \
 switch (C) \
 { \
     case GLFW_KEY_UNKNOWN:       return ZG_KEY_UNKNOWN; \

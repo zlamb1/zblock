@@ -1,2 +1,21 @@
-cmake -B build -S .
-cmake --build build/
+OUTPUT_DIR="build"
+CROSS_DIR="cross"
+
+function normal_build {
+    cmake -B $OUTPUT_DIR -S .
+    cmake --build $OUTPUT_DIR
+}
+
+if [ "$1" == "run" ]; then
+    normal_build
+    ./${OUTPUT_DIR}/zblock
+    exit 0
+fi
+
+if [ "$1" == "cross-windows" ]; then
+    cmake -DCMAKE_TOOLCHAIN_FILE=${CROSS_DIR}/windows.cmake -DBUILD_SHARED_LIBS=OFF -B "$OUTPUT_DIR-windows" -S .
+    cmake --build "$OUTPUT_DIR-windows"
+    exit 0
+fi
+
+normal_build

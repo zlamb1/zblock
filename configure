@@ -1,21 +1,41 @@
+OUTPUT_NAME="zblock"
 OUTPUT_DIR="build"
 CROSS_DIR="cross"
+ZIP_DIR="zblock.zip"
 
-function normal_build {
-    cmake -B $OUTPUT_DIR -S .
+CMAKE_FLAGS=("-DCMAKE_BUILD_TYPE=DEBUG")
+RUN=false
+INSTALL=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--debug)            CMAKE_FLAGS[0]="-DCMAKE_BUILD_TYPE=DEBUG"   ;;
+        -r|--release)          CMAKE_FLAGS[0]="-DCMAKE_BUILD_TYPE=RELEASE" ;;
+        --run)                 RUN=true                                    ;;
+        -i|--install)          INSTALL=true                                ;;
+        --cross)               
+            CMAKE_FLAGS+=("-DCMAKE_TOOLCHAIN_FILE=${CROSS_DIR}/windows.cmake");
+            OUTPUT_DIR="${OUTPUT_DIR}-windows"
+            OUTPUT_NAME+=".exe"
+        ;;
+    esac
+    shift
+done
+
+function cmake_build {
+    cmake "${CMAKE_FLAGS[@]}" -B $OUTPUT_DIR -S .
     cmake --build $OUTPUT_DIR
 }
 
-if [ "$1" == "run" ]; then
-    normal_build
-    ./${OUTPUT_DIR}/zblock
-    exit 0
+cmake_build
+
+if [ "$INSTALL" = true ]; then
+    rm -f "$ZIP_DIR"
+    zip -r -q "$ZIP_DIR" textures
+    zip -u -j "$ZIP_DIR" "$OUTPUT_DIR/$OUTPUT_NAME"
+    echo "Installed to $ZIP_DIR"
 fi
 
-if [ "$1" == "cross-windows" ]; then
-    cmake -DCMAKE_TOOLCHAIN_FILE=${CROSS_DIR}/windows.cmake -DBUILD_SHARED_LIBS=OFF -B "$OUTPUT_DIR-windows" -S .
-    cmake --build "$OUTPUT_DIR-windows"
-    exit 0
+if [ "$RUN" = true ]; then
+    ./$OUTPUT_DIR/$OUTPUT_NAME
 fi
-
-normal_build

@@ -12,4 +12,5 @@ compile_commands.json
 
 # output
 build/
-cross/build/
+build-windows/
+*.zip

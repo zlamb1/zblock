@@ -1,3 +1,4 @@
 [submodule "zgl"]
 	path = zgl
 	url = https://github.com/zlamb1/zgl
+	ignore = dirty

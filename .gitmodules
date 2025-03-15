@@ -1,8 +1,3 @@
-[submodule "lib/glfw"]
-	path = lib/glfw
-	url = https://github.com/glfw/glfw
-	ignore = dirty
-[submodule "lib/glm"]
-	path = lib/glm
-	url = https://github.com/g-truc/glm
-	ignore = dirty
+[submodule "zgl"]
+	path = zgl
+	url = https://github.com/zlamb1/zgl

@@ -10,5 +10,6 @@ compile_commands.json
 # VSCode
 .vscode/
 
-# cross-compiling
+# output
+build/
 cross/build/

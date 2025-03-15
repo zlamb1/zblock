@@ -15,7 +15,6 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 add_executable(
     zblock 
     ${SOURCES}
-    lib/glad/src/glad.c
 )
 
 target_include_directories(
@@ -26,29 +25,7 @@ set_target_properties(
     zblock
     PROPERTIES
     CMAKE_CXX_STANDARD 17
-    ARCHIVE_OUTPUT_DIRECTORY "bin"
-    LIBRARY_OUTPUT_DIRECTORY "bin"
-    RUNTIME_OUTPUT_DIRECTORY "bin"
 )
 
-find_package(OpenGL REQUIRED)
-target_link_libraries(zblock OpenGL::GL)
-
-target_include_directories(
-    zblock PRIVATE lib/glfw/include
-)
-add_subdirectory(lib/glfw)
-target_link_libraries(zblock glfw)
-
-target_include_directories(
-    zblock PRIVATE lib/glad/include
-)
-
-add_subdirectory(lib/glm)
-target_include_directories(
-    zblock PRIVATE lib/glm
-)
-
-target_include_directories(
-    zblock PRIVATE lib/stb
-)
+add_subdirectory(zgl)
+target_link_libraries(zblock zgl)

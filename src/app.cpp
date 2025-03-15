@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -9,35 +7,38 @@
 
 #include <app.hpp>
 
-#include <event/callback.hpp>
-#include <event/mouse.hpp>
-#include <event/window.hpp>
+#include <zgl/event/callback.hpp>
+#include <zgl/event/mouse.hpp>
+#include <zgl/event/window.hpp>
 
-#include <image/stbimage.hpp>
+#include <zgl/image/stbimage.hpp>
 
-#include <window/kb.hpp>
+#include <zgl/window/kb.hpp>
 
 static const char* vertexShaderCode =
     "#version 460\n"
     "uniform mat4 mPerspective;"
     "uniform mat4 mView;"
     "in vec3 vPos;\n"
-    "in vec2 vUV;\n"
-    "out vec2 fUV;\n"
+    "in vec3 vTextureCoordinates;\n"
+    "out vec2 fTextureCoordinates;\n"
+    "out int textureIdx;\n"
     "void main()\n"
     "{\n"
     "    gl_Position = mPerspective * mView * vec4(vPos.xyz, 1.0);\n"
-    "    fUV = vUV;"
+    "    fTextureCoordinates = vTextureCoordinates.xy;\n"
+    "    textureIdx = int(vTextureCoordinates.z);\n"
     "}\n";
 
 static const char* fragmentShaderCode =
     "#version 460\n"
-    "in vec2 fUV;\n"
-    "uniform sampler2D myTexture;\n"
+    "in vec2 fTextureCoordinates;\n"
+    "flat in int textureIdx;\n "
+    "uniform sampler2DArray textureArray;\n"
     "out vec4 fragColor;\n"
     "void main()\n"
     "{\n"
-    "    fragColor = texture(myTexture, fUV);\n"
+    "    fragColor = texture(textureArray, vec3(fTextureCoordinates, 1));\n"
     "}\n";
 
 GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(renderCore)
@@ -111,10 +112,10 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     
     float data[] = 
     {
-        0.5f,  0.5f, 3.0f, 1.0f, 1.0f, 
-        0.5f, -0.5f, 3.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 3.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, 3.0f, 0.0f, 1.0f
+        0.5f,  0.5f, 3.0f, 1.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, 3.0f, 1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, 3.0f, 0.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f, 3.0f, 0.0f, 1.0f, 1.0f
     };
 
     // hello-world tri
@@ -154,10 +155,10 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
 
     glEnableVertexAttribArray(0); 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        sizeof(float) * 5, (void*) 0);
+        sizeof(float) * 6, (void*) 0);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*) (sizeof(float) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*) (sizeof(float) * 3));
 }
 
 void GameApplication::RunApp()
@@ -165,9 +166,12 @@ void GameApplication::RunApp()
     CreatePerspective();
     m_View = camera.CreateViewMatrix(); 
 
-    STBImage image{"wall.jpg"};
-    auto texture = m_RenderCore.CreateTexture2D();  
-    texture->SetImage(image.GetWidth(), image.GetHeight(), (unsigned char*) image.GetData());
+    STBImage dirtTexture{"textures/block/dirt.png"};
+    STBImage grassTexture{"textures/block/grass_block_top.png"};
+
+    auto textureArray = m_RenderCore.CreateTextureArray(16, 16, 16);  
+    textureArray->AddImage(dirtTexture.GetData());
+    textureArray->AddImage(grassTexture.GetData()); 
 
     while (IsRunning())
     {
@@ -178,7 +182,7 @@ void GameApplication::RunApp()
         m_Program->SetMat4f("mPerspective", m_Perspective);
         m_Program->SetMat4f("mView", m_View);
 
-        texture->BindTexture(); 
+        textureArray->BindTexture(); 
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 

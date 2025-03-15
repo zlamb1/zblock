@@ -1,36 +1,6 @@
 #pragma once
 
-#include "time.hpp"
-#include <camera.hpp>
-#include <ref.hpp>
-
-#include <event/callback.hpp>
-#include <event/mouse.hpp>
-#include <event/window.hpp>
-
-#include <render/render.hpp>
-#include <render/shader.hpp>
-
-#include <window/window.hpp>
-
-class Application
-{
-    public:
-        Application(ZG::RenderCore& renderCore) : m_RenderCore(renderCore) {};
-        virtual ~Application() = default;
-
-        virtual void RunApp() = 0;
-
-        virtual bool IsInitialized() { return m_Initialized; }
-        virtual bool IsRunning() { return m_Running; }
-
-    protected:
-        ZG::RenderCore& m_RenderCore; 
-
-        bool m_Initialized = true;
-        bool m_Running = true;
-
-};
+#include <zgl/app.hpp>
 
 class GameApplication : public Application
 {

@@ -39,3 +39,8 @@ switch (B) \
     case GLFW_MOUSE_BUTTON_8: return ZG::MouseButton::EIGHT; \
     default:                  return ZG::MouseButton::UNKNOWN; \
 }
+
+static ZG::MouseButton GLFWConvertMouseBtn(int btn)
+{
+    GLFW_ZG_MOUSE_BTN_CONV(btn);
+}

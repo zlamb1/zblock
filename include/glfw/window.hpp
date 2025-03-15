@@ -55,6 +55,7 @@ namespace GLFW
         private:
             static void glfwWindowSize(GLFWwindow *window, int width, int height);
             static void glfwWindowFocus(GLFWwindow *window, int focused);
+            static void glfwMouseClick(GLFWwindow *window, int button, int action, int mods);
             static void glfwMouseMove(GLFWwindow *window, double x, double y);
             static void glfwKeyPress(GLFWwindow *window, int key, int scancode, int action, int mods); 
 

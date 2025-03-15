@@ -35,8 +35,9 @@ namespace GLFW
 
         glfwSetWindowUserPointer(m_Handle, this);
         glfwSetFramebufferSizeCallback(m_Handle, glfwWindowSize);
-        glfwSetWindowFocusCallback(m_Handle, glfwWindowFocus);
+        glfwSetMouseButtonCallback(m_Handle, glfwMouseClick);
         glfwSetCursorPosCallback(m_Handle, glfwMouseMove);
+        glfwSetWindowFocusCallback(m_Handle, glfwWindowFocus);
     }
 
     Window::~Window() 
@@ -184,6 +185,29 @@ namespace GLFW
         {
             auto windowFocusEvent = CreateRef<ZG::WindowFocusEvent>(windowPtr->GetRef()); 
             windowPtr->DispatchEvent(windowFocusEvent); 
+        }
+    }
+
+    void Window::glfwMouseClick(GLFWwindow *window, int button, int action, int mods)
+    {
+        auto windowPtr = WINDOW_PTR(window);
+        if (windowPtr != nullptr)
+        {
+            ZG::MouseButton mouseButton = GLFWConvertMouseBtn(button);
+            ZG::MouseAction mouseAction;
+
+            switch(action) 
+            {
+                case GLFW_PRESS:   
+                    mouseAction = ZG::MouseAction::PRESS;
+                    break;
+                default:           
+                    mouseAction = ZG::MouseAction::RELEASE;
+                    break;
+            }
+
+            auto mouseClickEvent = CreateRef<ZG::MouseClickEvent>(windowPtr->GetRef(), mouseAction, mouseButton);
+            windowPtr->DispatchEvent(mouseClickEvent);
         }
     }
 

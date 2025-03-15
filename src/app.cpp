@@ -72,9 +72,18 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
         }
     });
 
+    clickCallback = CreateRef<ZG::EventCallback<ZG::MouseClickEvent>>([&](auto event)
+    {
+        int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
+        m_Window->SetMousePosition(halfWidth, halfHeight);
+
+        m_Window->HideCursor(); 
+        m_Focused = true; 
+    });
+
     moveCallback = CreateRef<ZG::EventCallback<ZG::MouseMoveEvent>>([&](auto event)
     {
-        if (event->IsWindowFocused())
+        if (m_Focused && event->IsWindowFocused())
         {
             int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
             
@@ -89,6 +98,8 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     });
 
     m_Window->SubscribeEvent<ZG::WindowSizeEvent>(sizeCallback);
+    m_Window->SubscribeEvent<ZG::WindowFocusEvent>(focusCallback);
+    m_Window->SubscribeEvent<ZG::MouseClickEvent>(clickCallback);
     m_Window->SubscribeEvent<ZG::MouseMoveEvent>(moveCallback);
 
     // enable v-sync
@@ -175,6 +186,9 @@ void GameApplication::CreatePerspective(float aspect)
 
 void GameApplication::PollInputs()
 {
+    if (!m_Focused)
+        return;
+
     float movementSpeed = 0.02f; 
     glm::vec3 movementVec{0.0f};
 
@@ -197,6 +211,11 @@ void GameApplication::PollInputs()
         movementVec -= upDir; 
     if (m_Window->IsKeyPressed(ZG::KeyCode::LEFT_SHIFT))
         movementSpeed *= 3; 
+    if (m_Window->IsKeyPressed(ZG::KeyCode::ESCAPE))
+    {
+        m_Window->ShowCursor(); 
+        m_Focused = false; 
+    }
 
     if (forwardDir.length())
     {

@@ -86,4 +86,74 @@ namespace GL
         GLCall(glUseProgram(m_Handle)); 
         return true; 
     }
+
+
+    bool ShaderProgram::SetBoolean(const std::string& uniformName, bool b)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniform1i(location, b);
+        return true;
+    }
+
+    bool ShaderProgram::SetInteger(const std::string& uniformName, int i)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniform1i(location, i);
+        return true;
+    }
+
+    bool ShaderProgram::SetFloat(const std::string& uniformName, float f)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniform1f(location, f);
+        return true;
+    }
+
+    bool ShaderProgram::SetVec3f(const std::string& uniformName, const glm::vec3& vec)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniform3fv(location, 1, &vec[0]);
+        return true;
+    }
+
+    bool ShaderProgram::SetVec4f(const std::string& uniformName, const glm::vec4& vec)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniform4fv(location, 1, &vec[0]);
+        return true;
+    }
+
+    bool ShaderProgram::SetMat3f(const std::string& uniformName, const glm::mat3& mat)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniformMatrix3fv(location, 1, GL_FALSE, &mat[0][0]);
+        return true;
+    }
+
+    bool ShaderProgram::SetMat4f(const std::string& uniformName, const glm::mat4& mat)
+    {
+        GLint location = GetUniformLocation(uniformName);
+        if (location == -1)
+            return false;
+        glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
+        return true;
+    }
+
+    GLint ShaderProgram::GetUniformLocation(const std::string& uniformName)
+    {
+        const GLchar *name = uniformName.c_str();
+        return glGetUniformLocation(m_Handle, name);
+    }
 };

@@ -1,6 +1,16 @@
+#include "event/window.hpp"
+#include "event/kb.hpp"
+#include "event/mouse.hpp"
+#include "glfw/kb.hpp"
+#include "window/kb.hpp"
 #include <GLFW/glfw3.h>
 
+#include <glfw/mouse.hpp>
 #include <glfw/window.hpp>
+
+#include <window/mouse.hpp>
+
+#define WINDOW_PTR(W) (Window*) glfwGetWindowUserPointer((W))
 
 namespace GLFW
 {
@@ -12,7 +22,7 @@ namespace GLFW
     {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         m_Handle = glfwCreateWindow(width, height, "", NULL, NULL); 
 
@@ -20,7 +30,13 @@ namespace GLFW
         {
             m_Initialized = false;
             m_InitializeErrorHint = "GLFW Window Failed To Initialize\n"; 
+            return;
         }
+
+        glfwSetWindowUserPointer(m_Handle, this);
+        glfwSetFramebufferSizeCallback(m_Handle, glfwWindowSize);
+        glfwSetWindowFocusCallback(m_Handle, glfwWindowFocus);
+        glfwSetCursorPosCallback(m_Handle, glfwMouseMove);
     }
 
     Window::~Window() 
@@ -100,6 +116,39 @@ namespace GLFW
         glfwSetCursorPos(m_Handle, x, y);
     }
 
+    bool Window::IsMouseButtonClicked(ZG::MouseButton button)
+    {
+        int glfwButton = ZG_MOUSE_BTN_TO_GLFW(button); 
+        if (glfwButton == -1) return false;
+        return glfwGetMouseButton(m_Handle, glfwButton) == GLFW_PRESS; 
+    }
+
+    void Window::ShowCursor()
+    {
+        glfwSetInputMode(m_Handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    
+    void Window::HideCursor()
+    {
+        glfwSetInputMode(m_Handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    ZG::KeyAction Window::GetKeyState(ZG::KeyCode keyCode)
+    {
+        switch (glfwGetKey(m_Handle, KeyCodeConvertGLFW(keyCode)))
+        {
+            case GLFW_PRESS:
+                return ZG::KeyAction::PRESS;
+            default:
+                return ZG::KeyAction::RELEASE; 
+        }
+    }
+
+    bool Window::IsFocused()
+    {
+        return glfwGetWindowAttrib(m_Handle, GLFW_FOCUSED); 
+    }
+
     const std::string& Window::GetTitle()
     {
         const char *title = glfwGetWindowTitle(m_Handle);
@@ -116,5 +165,63 @@ namespace GLFW
     bool Window::IsRunning()
     {
         return !glfwWindowShouldClose(m_Handle);
+    }
+
+    void Window::glfwWindowSize(GLFWwindow* window, int width, int height)
+    {
+        auto windowPtr = WINDOW_PTR(window);
+        if (windowPtr != nullptr)
+        {
+            auto windowSizeEvent = CreateRef<ZG::WindowSizeEvent>(windowPtr->GetRef()); 
+            windowPtr->DispatchEvent(windowSizeEvent); 
+        }
+    }
+
+    void Window::glfwWindowFocus(GLFWwindow *window, int focused)
+    {
+        auto windowPtr = WINDOW_PTR(window);
+        if (windowPtr != nullptr)
+        {
+            auto windowFocusEvent = CreateRef<ZG::WindowFocusEvent>(windowPtr->GetRef()); 
+            windowPtr->DispatchEvent(windowFocusEvent); 
+        }
+    }
+
+    void Window::glfwMouseMove(GLFWwindow* window, double x, double y)
+    {
+        auto windowPtr = WINDOW_PTR(window);
+        if (windowPtr != nullptr)
+        {
+            auto mouseMoveEvent = CreateRef<ZG::MouseMoveEvent>(windowPtr->GetRef()); 
+            windowPtr->DispatchEvent(mouseMoveEvent); 
+        }
+    }
+
+    void Window::glfwKeyPress(GLFWwindow *window, int key, int scancode, int action, int mods)
+    {
+        auto windowPtr = WINDOW_PTR(window);
+        if (windowPtr != nullptr)
+        {
+            ZG::KeyAction keyAction;
+            ZG::KeyCode keyCode;
+
+            switch (action)
+            {
+                case GLFW_PRESS:
+                    keyAction = ZG::KeyAction::PRESS;
+                    break;
+                case GLFW_REPEAT:
+                    keyAction = ZG::KeyAction::REPEAT;
+                    break;
+                case GLFW_RELEASE:
+                    keyAction = ZG::KeyAction::RELEASE;
+                    break;
+            }
+
+            keyCode = (ZG::KeyCode) GLFWConvertKeyCode(key); 
+
+            auto keyPressEvent = CreateRef<ZG::KeyPressEvent>(windowPtr->GetRef(), keyAction, keyCode); 
+            windowPtr->DispatchEvent(keyPressEvent); 
+        }
     }
 };

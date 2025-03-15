@@ -499,6 +499,142 @@ switch (C) \
     case GLFW_KEY_RIGHT_ALT:     return ZG_KEY_RIGHT_ALT; \
     case GLFW_KEY_RIGHT_SUPER:   return ZG_KEY_RIGHT_SUPER; \
     case GLFW_KEY_MENU:          return ZG_KEY_MENU; \
-    case GLFW_KEY_LAST:          return ZG_KEY_LAST; \
     default:                     return ZG_KEY_UNKNOWN; \
+}
+
+#define GLFW_ZG_KEY_CONV(C) \
+switch (C) \
+{ \
+    case ZG_KEY_UNKNOWN:       return GLFW_KEY_UNKNOWN; \
+    case ZG_KEY_SPACE:         return GLFW_KEY_SPACE; \
+    case ZG_KEY_APOSTROPHE:    return GLFW_KEY_APOSTROPHE; \
+    case ZG_KEY_COMMA:         return GLFW_KEY_COMMA; \
+    case ZG_KEY_MINUS:         return GLFW_KEY_MINUS; \
+    case ZG_KEY_PERIOD:        return GLFW_KEY_PERIOD; \
+    case ZG_KEY_SLASH:         return GLFW_KEY_SLASH; \
+    case ZG_KEY_0:             return GLFW_KEY_0; \
+    case ZG_KEY_1:             return GLFW_KEY_1; \
+    case ZG_KEY_2:             return GLFW_KEY_2; \
+    case ZG_KEY_3:             return GLFW_KEY_3; \
+    case ZG_KEY_4:             return GLFW_KEY_4; \
+    case ZG_KEY_5:             return GLFW_KEY_5; \
+    case ZG_KEY_6:             return GLFW_KEY_6; \
+    case ZG_KEY_7:             return GLFW_KEY_7; \
+    case ZG_KEY_8:             return GLFW_KEY_8; \
+    case ZG_KEY_9:             return GLFW_KEY_9; \
+    case ZG_KEY_SEMICOLON:     return GLFW_KEY_SEMICOLON; \
+    case ZG_KEY_EQUAL:         return GLFW_KEY_EQUAL; \
+    case ZG_KEY_A:             return GLFW_KEY_A; \
+    case ZG_KEY_B:             return GLFW_KEY_B; \
+    case ZG_KEY_C:             return GLFW_KEY_C; \
+    case ZG_KEY_D:             return GLFW_KEY_D; \
+    case ZG_KEY_E:             return GLFW_KEY_E; \
+    case ZG_KEY_F:             return GLFW_KEY_F; \
+    case ZG_KEY_G:             return GLFW_KEY_G; \
+    case ZG_KEY_H:             return GLFW_KEY_H; \
+    case ZG_KEY_I:             return GLFW_KEY_I; \
+    case ZG_KEY_J:             return GLFW_KEY_J; \
+    case ZG_KEY_K:             return GLFW_KEY_K; \
+    case ZG_KEY_L:             return GLFW_KEY_L; \
+    case ZG_KEY_M:             return GLFW_KEY_M; \
+    case ZG_KEY_N:             return GLFW_KEY_N; \
+    case ZG_KEY_O:             return GLFW_KEY_O; \
+    case ZG_KEY_P:             return GLFW_KEY_P; \
+    case ZG_KEY_Q:             return GLFW_KEY_Q; \
+    case ZG_KEY_R:             return GLFW_KEY_R; \
+    case ZG_KEY_S:             return GLFW_KEY_S; \
+    case ZG_KEY_T:             return GLFW_KEY_T; \
+    case ZG_KEY_U:             return GLFW_KEY_U; \
+    case ZG_KEY_V:             return GLFW_KEY_V; \
+    case ZG_KEY_W:             return GLFW_KEY_W; \
+    case ZG_KEY_X:             return GLFW_KEY_X; \
+    case ZG_KEY_Y:             return GLFW_KEY_Y; \
+    case ZG_KEY_Z:             return GLFW_KEY_Z; \
+    case ZG_KEY_LEFT_BRACKET:  return GLFW_KEY_LEFT_BRACKET; \
+    case ZG_KEY_BACKSLASH:     return GLFW_KEY_BACKSLASH; \
+    case ZG_KEY_RIGHT_BRACKET: return GLFW_KEY_RIGHT_BRACKET; \
+    case ZG_KEY_GRAVE_ACCENT:  return GLFW_KEY_GRAVE_ACCENT; \
+    case ZG_KEY_WORLD_1:       return GLFW_KEY_WORLD_1; \
+    case ZG_KEY_WORLD_2:       return GLFW_KEY_WORLD_2; \
+    case ZG_KEY_ESCAPE:        return GLFW_KEY_ESCAPE; \
+    case ZG_KEY_ENTER:         return GLFW_KEY_ENTER; \
+    case ZG_KEY_TAB:           return GLFW_KEY_TAB; \
+    case ZG_KEY_BACKSPACE:     return GLFW_KEY_BACKSPACE; \
+    case ZG_KEY_INSERT:        return GLFW_KEY_INSERT; \
+    case ZG_KEY_DELETE:        return GLFW_KEY_DELETE; \
+    case ZG_KEY_RIGHT:         return GLFW_KEY_RIGHT; \
+    case ZG_KEY_LEFT:          return GLFW_KEY_LEFT; \
+    case ZG_KEY_DOWN:          return GLFW_KEY_DOWN; \
+    case ZG_KEY_UP:            return GLFW_KEY_UP; \
+    case ZG_KEY_PAGE_UP:       return GLFW_KEY_PAGE_UP; \
+    case ZG_KEY_PAGE_DOWN:     return GLFW_KEY_PAGE_DOWN; \
+    case ZG_KEY_HOME:          return GLFW_KEY_HOME; \
+    case ZG_KEY_END:           return GLFW_KEY_END; \
+    case ZG_KEY_CAPS_LOCK:     return GLFW_KEY_CAPS_LOCK; \
+    case ZG_KEY_SCROLL_LOCK:   return GLFW_KEY_SCROLL_LOCK; \
+    case ZG_KEY_NUM_LOCK:      return GLFW_KEY_NUM_LOCK; \
+    case ZG_KEY_PRINT_SCREEN:  return GLFW_KEY_PRINT_SCREEN; \
+    case ZG_KEY_PAUSE:         return GLFW_KEY_PAUSE; \
+    case ZG_KEY_F1:            return GLFW_KEY_F1; \
+    case ZG_KEY_F2:            return GLFW_KEY_F2; \
+    case ZG_KEY_F3:            return GLFW_KEY_F3; \
+    case ZG_KEY_F4:            return GLFW_KEY_F4; \
+    case ZG_KEY_F5:            return GLFW_KEY_F5; \
+    case ZG_KEY_F6:            return GLFW_KEY_F6; \
+    case ZG_KEY_F7:            return GLFW_KEY_F7; \
+    case ZG_KEY_F8:            return GLFW_KEY_F8; \
+    case ZG_KEY_F9:            return GLFW_KEY_F9; \
+    case ZG_KEY_F10:           return GLFW_KEY_F10; \
+    case ZG_KEY_F11:           return GLFW_KEY_F11; \
+    case ZG_KEY_F12:           return GLFW_KEY_F12; \
+    case ZG_KEY_F13:           return GLFW_KEY_F13; \
+    case ZG_KEY_F14:           return GLFW_KEY_F14; \
+    case ZG_KEY_F15:           return GLFW_KEY_F15; \
+    case ZG_KEY_F16:           return GLFW_KEY_F16; \
+    case ZG_KEY_F17:           return GLFW_KEY_F17; \
+    case ZG_KEY_F18:           return GLFW_KEY_F18; \
+    case ZG_KEY_F19:           return GLFW_KEY_F19; \
+    case ZG_KEY_F20:           return GLFW_KEY_F20; \
+    case ZG_KEY_F21:           return GLFW_KEY_F21; \
+    case ZG_KEY_F22:           return GLFW_KEY_F22; \
+    case ZG_KEY_F23:           return GLFW_KEY_F23; \
+    case ZG_KEY_F24:           return GLFW_KEY_F24; \
+    case ZG_KEY_F25:           return GLFW_KEY_F25; \
+    case ZG_KEY_KP_0:          return GLFW_KEY_KP_0; \
+    case ZG_KEY_KP_1:          return GLFW_KEY_KP_1; \
+    case ZG_KEY_KP_2:          return GLFW_KEY_KP_2; \
+    case ZG_KEY_KP_3:          return GLFW_KEY_KP_3; \
+    case ZG_KEY_KP_4:          return GLFW_KEY_KP_4; \
+    case ZG_KEY_KP_5:          return GLFW_KEY_KP_5; \
+    case ZG_KEY_KP_6:          return GLFW_KEY_KP_6; \
+    case ZG_KEY_KP_7:          return GLFW_KEY_KP_7; \
+    case ZG_KEY_KP_8:          return GLFW_KEY_KP_8; \
+    case ZG_KEY_KP_9:          return GLFW_KEY_KP_9; \
+    case ZG_KEY_KP_DECIMAL:    return GLFW_KEY_KP_DECIMAL; \
+    case ZG_KEY_KP_DIVIDE:     return GLFW_KEY_KP_DIVIDE; \
+    case ZG_KEY_KP_MULTIPLY:   return GLFW_KEY_KP_MULTIPLY; \
+    case ZG_KEY_KP_SUBTRACT:   return GLFW_KEY_KP_SUBTRACT; \
+    case ZG_KEY_KP_ADD:        return GLFW_KEY_KP_ADD; \
+    case ZG_KEY_KP_ENTER:      return GLFW_KEY_KP_ENTER; \
+    case ZG_KEY_KP_EQUAL:      return GLFW_KEY_KP_EQUAL; \
+    case ZG_KEY_LEFT_SHIFT:    return GLFW_KEY_LEFT_SHIFT; \
+    case ZG_KEY_LEFT_CONTROL:  return GLFW_KEY_LEFT_CONTROL; \
+    case ZG_KEY_LEFT_ALT:      return GLFW_KEY_LEFT_ALT; \
+    case ZG_KEY_LEFT_SUPER:    return GLFW_KEY_LEFT_SUPER; \
+    case ZG_KEY_RIGHT_SHIFT:   return GLFW_KEY_RIGHT_SHIFT; \
+    case ZG_KEY_RIGHT_CONTROL: return GLFW_KEY_RIGHT_CONTROL; \
+    case ZG_KEY_RIGHT_ALT:     return GLFW_KEY_RIGHT_ALT; \
+    case ZG_KEY_RIGHT_SUPER:   return GLFW_KEY_RIGHT_SUPER; \
+    case ZG_KEY_MENU:          return GLFW_KEY_MENU; \
+    default:                   return GLFW_KEY_UNKNOWN; \
+}
+
+static int GLFWConvertKeyCode(int keyCode)
+{
+    ZG_GLFW_KEY_CONV(keyCode);
+}
+
+static int KeyCodeConvertGLFW(ZG::KeyCode keyCode)
+{
+    GLFW_ZG_KEY_CONV((int) keyCode);
 }

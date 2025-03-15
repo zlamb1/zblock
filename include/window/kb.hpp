@@ -2,7 +2,7 @@
 
 namespace ZG
 {
-    enum class KeyPress
+    enum class KeyAction
     {
         PRESS, REPEAT, RELEASE
     };

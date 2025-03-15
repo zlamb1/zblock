@@ -1,5 +1,9 @@
 #pragma once
 
+#include "camera.hpp"
+#include "event/callback.hpp"
+#include "event/mouse.hpp"
+#include "event/window.hpp"
 #include <ref.hpp>
 
 #include <render/render.hpp>
@@ -37,5 +41,19 @@ class GameApplication : public Application
     protected:
         Ref<ZG::Window> m_Window;
         Ref<ZG::ShaderProgram> m_Program; 
+
+        Ref<ZG::EventCallback<ZG::WindowSizeEvent>> sizeCallback;
+        Ref<ZG::EventCallback<ZG::WindowFocusEvent>> focusCallback; 
+        Ref<ZG::EventCallback<ZG::MouseMoveEvent>> moveCallback;
+
+        FPSCamera camera{}; 
+
+        glm::mat4 m_Perspective;
+        glm::mat4 m_View; 
+
+        void CreatePerspective(); 
+        void CreatePerspective(float aspect); 
+
+        void PollInputs();
 
 };

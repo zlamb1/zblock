@@ -1,32 +1,50 @@
 #pragma once
 
+#include <ref.hpp>
+
 #include <event/event.hpp>
-#include <window/window.hpp>
 
 namespace ZG
 {
+    class Window; 
+
     class WindowEvent : public Event
     {
         public:
-            WindowEvent(ZG::Window& window) : m_Window(window) {}
+            WindowEvent(Ref<Window> window);
+            WeakRef<Window> GetWindow() const;
 
-            ZG::Window& GetWindow() const { return m_Window; }
+            bool IsWindowFocused() const; 
 
         protected:
-            ZG::Window& m_Window;
+            WeakRef<Window> m_Window;
+            bool m_WindowFocused;
 
     };
     
     class WindowSizeEvent : public WindowEvent
     {
         public:
-            WindowSizeEvent(ZG::Window& window) : WindowEvent(window), m_Width(window.GetWidth()), m_Height(window.GetHeight()) {}
-            WindowSizeEvent(ZG::Window& window, int width, int height) : WindowEvent(window), m_Width(width), m_Height(height) {}
-            
-            int GetWidth() const { return m_Width; }
-            int GetHeight() const { return m_Height; }
+            WindowSizeEvent(Ref<Window> window);
 
+            virtual EventType GetEventType() const override;
+
+            int GetWidth() const;
+            int GetHeight() const;
+            
         protected:
-            uint m_Width, m_Height;
+            int m_Width, m_Height;
+
+    };
+
+    class WindowFocusEvent : public WindowEvent
+    {
+        public:
+            WindowFocusEvent(Ref<Window> window) : WindowEvent(window) 
+            {
+            }
+
+            virtual EventType GetEventType() const override { return EventType::WindowFocus; }
+
     };
 }

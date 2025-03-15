@@ -1,3 +1,8 @@
+#include "event/mouse.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/geometric.hpp"
+#include "glm/trigonometric.hpp"
+#include "window/kb.hpp"
 #include <iostream>
 
 #include <glad/glad.h>
@@ -5,12 +10,17 @@
 
 #include <app.hpp>
 
+#include <event/callback.hpp>
+#include <event/window.hpp>
+
 static const char* vertexShaderCode =
     "#version 460\n"
-    "in vec3 vecPos;\n"
+    "uniform mat4 mPerspective;"
+    "uniform mat4 mView;"
+    "in vec3 vPos;\n"
     "void main()\n"
     "{\n"
-    "    gl_Position = vec4(vecPos.xyz, 1.0);\n"
+    "    gl_Position = mPerspective * mView * vec4(vPos.xyz, 1.0);\n"
     "}\n";
 
 static const char* fragmentShaderCode =
@@ -38,7 +48,8 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     }
     
     m_Window->SetTitle("zblock");
-    
+    m_Window->HideCursor();
+
     // make window context current for thread
     if (!m_RenderCore.MakeContextCurrent(m_Window))
     {
@@ -46,14 +57,48 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
         return;
     }
 
+    sizeCallback = CreateRef<ZG::EventCallback<ZG::WindowSizeEvent>>([&](auto event) 
+    {
+        CreatePerspective((float) event->GetWidth() / (float) event->GetHeight()); 
+        m_RenderCore.SetViewport(0, 0, event->GetWidth(), event->GetHeight());
+    });
+
+    focusCallback = CreateRef<ZG::EventCallback<ZG::WindowFocusEvent>>([&](auto event)
+    {
+        if (event->IsWindowFocused())
+        {
+            int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
+            m_Window->SetMousePosition(halfWidth, halfHeight);
+        }
+    });
+
+    moveCallback = CreateRef<ZG::EventCallback<ZG::MouseMoveEvent>>([&](auto event)
+    {
+        if (event->IsWindowFocused())
+        {
+            int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
+            
+            constexpr float cameraSpeed = 0.002f;
+            float dx = halfWidth - event->GetX(), dy = halfHeight - event->GetY();
+            camera.SetYaw(camera.GetYaw() + dx * cameraSpeed);
+            camera.SetPitch(camera.GetPitch() + dy * cameraSpeed);
+            m_View = camera.CreateViewMatrix(); 
+
+            m_Window->SetMousePosition(halfWidth, halfHeight);
+        }
+    });
+
+    m_Window->SubscribeEvent<ZG::WindowSizeEvent>(sizeCallback);
+    m_Window->SubscribeEvent<ZG::MouseMoveEvent>(moveCallback);
+
     // enable v-sync
     m_RenderCore.SetSwapInterval(1);
     
     float data[9] = 
     {
-        -0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
+        -0.5f, -0.5f, 3.0f,
+        0.0f, 0.5f, 3.0f,
+        0.5f, -0.5f, 3.0f
     };
 
     // hello-world tri
@@ -100,12 +145,62 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
 
 void GameApplication::RunApp()
 {
+    CreatePerspective();
+    m_View = camera.CreateViewMatrix(); 
+
     while (IsRunning())
     {
+        PollInputs();
         glClear(GL_COLOR_BUFFER_BIT);
+
         m_Program->BindProgram(); 
+        m_Program->SetMat4f("mPerspective", m_Perspective);
+        m_Program->SetMat4f("mView", m_View);
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
         m_Window->SwapBuffers(); 
         m_Window->PollEvents();
+    }
+}
+
+void GameApplication::CreatePerspective()
+{
+    CreatePerspective((float) m_Window->GetWidth() / (float) m_Window->GetHeight());
+}
+
+void GameApplication::CreatePerspective(float aspect)
+{
+    m_Perspective = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+}
+
+void GameApplication::PollInputs()
+{
+    float movementSpeed = 0.02f; 
+    glm::vec3 movementVec{0.0f};
+
+    glm::vec3 forwardDir = camera.GetHorizontalDirection(); 
+    forwardDir.y = 0; 
+    const glm::vec3 upDir = camera.GetUpDirection(); 
+    const glm::vec3 rightDir = glm::cross(forwardDir, upDir); 
+
+    if (m_Window->IsKeyPressed(ZG::KeyCode::W))
+        movementVec += forwardDir; 
+    if (m_Window->IsKeyPressed(ZG::KeyCode::S))
+        movementVec -= forwardDir; 
+    if (m_Window->IsKeyPressed(ZG::KeyCode::D))
+        movementVec += rightDir;
+    if (m_Window->IsKeyPressed(ZG::KeyCode::A))
+        movementVec -= rightDir;
+    if (m_Window->IsKeyPressed(ZG::KeyCode::SPACE))
+        movementVec += upDir;
+    if (m_Window->IsKeyPressed(ZG::KeyCode::LEFT_CONTROL))
+        movementVec -= upDir; 
+    if (m_Window->IsKeyPressed(ZG::KeyCode::LEFT_SHIFT))
+        movementSpeed *= 3; 
+
+    if (forwardDir.length())
+    {
+        camera.MoveByVec(movementVec * movementSpeed); 
+        m_View = camera.CreateViewMatrix(); 
     }
 }

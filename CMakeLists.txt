@@ -9,15 +9,12 @@ project(
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# recursively find source files
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
 add_executable(
     zblock 
-    src/main.cpp
-    src/app.cpp
-    src/gl/shader.cpp
-    src/gl/render.cpp
-    src/gl/texture.cpp
-    src/glfw/render.cpp
-    src/glfw/window.cpp
+    ${SOURCES}
     lib/glad/src/glad.c
 )
 

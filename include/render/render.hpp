@@ -3,6 +3,7 @@
 #include <types.hpp>
 
 #include <render/shader.hpp>
+#include <render/texture.hpp>
 
 #include <window/window.hpp>
 
@@ -25,6 +26,7 @@ namespace ZG
 
             virtual Ref<Shader> CreateShader(ShaderType shaderType) = 0;
             virtual Ref<ShaderProgram> CreateProgram() = 0;
+            virtual Ref<Texture2D> CreateTexture2D() = 0; 
             virtual Ref<Window> CreateWindow() = 0; 
             virtual Ref<Window> CreateWindow(int width, int height) = 0; 
 

@@ -1,10 +1,12 @@
 #pragma once
 
-#include "camera.hpp"
-#include "event/callback.hpp"
-#include "event/mouse.hpp"
-#include "event/window.hpp"
+#include "time.hpp"
+#include <camera.hpp>
 #include <ref.hpp>
+
+#include <event/callback.hpp>
+#include <event/mouse.hpp>
+#include <event/window.hpp>
 
 #include <render/render.hpp>
 #include <render/shader.hpp>
@@ -50,6 +52,8 @@ class GameApplication : public Application
         Ref<ZG::EventCallback<ZG::WindowFocusEvent>> focusCallback; 
 
         FPSCamera camera{}; 
+
+        TimedAction focusAction{250}; 
 
         glm::mat4 m_Perspective;
         glm::mat4 m_View; 

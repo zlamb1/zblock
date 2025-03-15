@@ -5,7 +5,7 @@ namespace GL
     class Texture2D : public ZG::Texture2D
     {
         public:
-            Texture2D(ZG::TextureType textureType);
+            Texture2D();
             virtual ~Texture2D(); 
 
             virtual bool BindTexture() override;

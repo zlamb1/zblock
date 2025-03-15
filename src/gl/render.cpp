@@ -3,6 +3,7 @@
 #include <gl/debug.hpp>
 #include <gl/shader.hpp>
 #include <gl/render.hpp>
+#include <gl/texture.hpp>
 
 #include <ref.hpp>
 
@@ -21,5 +22,10 @@ namespace GL
     Ref<ZG::ShaderProgram> RenderCore::CreateProgram()
     {
         return CreateRef<GL::ShaderProgram>(); 
+    }
+
+    Ref<ZG::Texture2D> RenderCore::CreateTexture2D()
+    {
+        return CreateRef<GL::Texture2D>(); 
     }
 };

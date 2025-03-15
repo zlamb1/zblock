@@ -1,34 +1,43 @@
-#include "event/mouse.hpp"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/geometric.hpp"
-#include "glm/trigonometric.hpp"
-#include "window/kb.hpp"
 #include <iostream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
+
 #include <app.hpp>
 
 #include <event/callback.hpp>
+#include <event/mouse.hpp>
 #include <event/window.hpp>
+
+#include <image/stbimage.hpp>
+
+#include <window/kb.hpp>
 
 static const char* vertexShaderCode =
     "#version 460\n"
     "uniform mat4 mPerspective;"
     "uniform mat4 mView;"
     "in vec3 vPos;\n"
+    "in vec2 vUV;\n"
+    "out vec2 fUV;\n"
     "void main()\n"
     "{\n"
     "    gl_Position = mPerspective * mView * vec4(vPos.xyz, 1.0);\n"
+    "    fUV = vUV;"
     "}\n";
 
 static const char* fragmentShaderCode =
     "#version 460\n"
-    "out vec4 fragColor;"
+    "in vec2 fUV;\n"
+    "uniform sampler2D myTexture;\n"
+    "out vec4 fragColor;\n"
     "void main()\n"
     "{\n"
-    "    fragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+    "    fragColor = texture(myTexture, fUV);\n"
     "}\n";
 
 GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(renderCore)
@@ -39,7 +48,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
         return;
     }
 
-    m_Window = m_RenderCore.CreateWindow(500, 500); 
+    m_Window = m_RenderCore.CreateWindow(800, 800); 
 
     if (!m_Window->IsInitialized())
     {
@@ -66,18 +75,13 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     focusCallback = CreateRef<ZG::EventCallback<ZG::WindowFocusEvent>>([&](auto event)
     {
         if (event->IsWindowFocused())
-        {
-            int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
-            m_Window->SetMousePosition(halfWidth, halfHeight);
-        }
+            m_Window->SetMouseCentered(); 
     });
 
     clickCallback = CreateRef<ZG::EventCallback<ZG::MouseClickEvent>>([&](auto event)
     {
-        int halfWidth = m_Window->GetWidth() / 2, halfHeight = m_Window->GetHeight() / 2;
-        m_Window->SetMousePosition(halfWidth, halfHeight);
-
         m_Window->HideCursor(); 
+        m_Window->SetMouseCentered(); 
         m_Focused = true; 
     });
 
@@ -93,7 +97,7 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
             camera.SetPitch(camera.GetPitch() + dy * cameraSpeed);
             m_View = camera.CreateViewMatrix(); 
 
-            m_Window->SetMousePosition(halfWidth, halfHeight);
+            m_Window->SetMouseCentered(); 
         }
     });
 
@@ -105,11 +109,12 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
     // enable v-sync
     m_RenderCore.SetSwapInterval(1);
     
-    float data[9] = 
+    float data[] = 
     {
-        -0.5f, -0.5f, 3.0f,
-        0.0f, 0.5f, 3.0f,
-        0.5f, -0.5f, 3.0f
+        0.5f,  0.5f, 3.0f, 1.0f, 1.0f, 
+        0.5f, -0.5f, 3.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 3.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, 3.0f, 0.0f, 1.0f
     };
 
     // hello-world tri
@@ -149,15 +154,20 @@ GameApplication::GameApplication(ZG::RenderCore& renderCore) : Application(rende
 
     glEnableVertexAttribArray(0); 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        sizeof(data[0]) * 3, (void*) 0);
+        sizeof(float) * 5, (void*) 0);
 
-    m_RenderCore.SetViewport(0, 0, 500, 500);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*) (sizeof(float) * 3));
 }
 
 void GameApplication::RunApp()
 {
     CreatePerspective();
     m_View = camera.CreateViewMatrix(); 
+
+    STBImage image{"wall.jpg"};
+    auto texture = m_RenderCore.CreateTexture2D();  
+    texture->SetImage(image.GetWidth(), image.GetHeight(), (unsigned char*) image.GetData());
 
     while (IsRunning())
     {
@@ -167,6 +177,9 @@ void GameApplication::RunApp()
         m_Program->BindProgram(); 
         m_Program->SetMat4f("mPerspective", m_Perspective);
         m_Program->SetMat4f("mView", m_View);
+
+        texture->BindTexture(); 
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         m_Window->SwapBuffers(); 
@@ -186,9 +199,6 @@ void GameApplication::CreatePerspective(float aspect)
 
 void GameApplication::PollInputs()
 {
-    if (!m_Focused)
-        return;
-
     float movementSpeed = 0.02f; 
     glm::vec3 movementVec{0.0f};
 
@@ -211,13 +221,20 @@ void GameApplication::PollInputs()
         movementVec -= upDir; 
     if (m_Window->IsKeyPressed(ZG::KeyCode::LEFT_SHIFT))
         movementSpeed *= 3; 
-    if (m_Window->IsKeyPressed(ZG::KeyCode::ESCAPE))
+    if (m_Window->IsKeyPressed(ZG::KeyCode::ESCAPE) && focusAction.PerformAction(glfwGetTime()))
     {
-        m_Window->ShowCursor(); 
-        m_Focused = false; 
+        if (m_Focused)
+            m_Window->ShowCursor();
+        else
+        {
+            m_Window->HideCursor();
+            m_Window->SetMouseCentered(); 
+        }
+
+        m_Focused = !m_Focused; 
     }
 
-    if (forwardDir.length())
+    if (m_Focused && forwardDir.length())
     {
         camera.MoveByVec(movementVec * movementSpeed); 
         m_View = camera.CreateViewMatrix(); 

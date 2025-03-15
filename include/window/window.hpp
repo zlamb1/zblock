@@ -47,6 +47,12 @@ namespace ZG
             virtual void SetMouseX(double x) { SetMousePosition(x, GetMouseY()); }
             virtual void SetMouseY(double y) { SetMousePosition(GetMouseX(), y); }
             virtual void SetMousePosition(double x, double y) = 0; 
+            
+            virtual void SetMouseCentered()
+            {
+                int halfWidth = GetWidth() / 2, halfHeight = GetHeight() / 2;
+                SetMousePosition(halfWidth, halfHeight);  
+            } 
 
             virtual bool IsMouseButtonClicked(MouseButton button) = 0; 
 

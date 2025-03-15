@@ -28,7 +28,7 @@ namespace ZG
     class Texture2D : public Texture
     {
         public:
-            Texture2D(TextureType textureType) : Texture(textureType) {}
+            Texture2D() : Texture(TextureType::TEXTURE_2D) {}
             virtual ~Texture2D() = default; 
 
             virtual void SetImage(int width, int height, unsigned char *data) = 0; 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "render/texture.hpp"
 #include <render/render.hpp>
 
 namespace GL
@@ -14,6 +15,7 @@ namespace GL
 
             virtual Ref<ZG::Shader> CreateShader(ZG::ShaderType shaderType) override;
             virtual Ref<ZG::ShaderProgram> CreateProgram() override;
+            virtual Ref<ZG::Texture2D> CreateTexture2D() override; 
 
     };
 };
